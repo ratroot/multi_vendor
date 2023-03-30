@@ -33,15 +33,17 @@ require __DIR__.'/auth.php';
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function() {
     //Admin Login Route
-    Route::match(['get', 'post'],'login','App\Http\Controllers\Admin\AdminController@login');
+    Route::match(['get', 'post'],'login','App\Http\Controllers\Admin\AdminAuthController@login');
 
     //Admin Dashboard Route
     Route::group(['middleware' => ['admin']], function(){
         //Admin Logout
-        Route::get('logout', 'App\Http\Controllers\Admin\AdminController@logout');
+        Route::get('logout', 'App\Http\Controllers\Admin\AdminAuthController@logout');
 
         Route::get('dashboard', 'App\Http\Controllers\Admin\AdminController@index');
-        Route::match(['get', 'post'], 'update-password', "App\Http\Controllers\Admin\AdminController@updatePassword");
+        Route::match(['get', 'post'], 'update-password', "App\Http\Controllers\Admin\AdminAuthController@updatePassword");
+        Route::match(['get', 'post'], 'update-details', "App\Http\Controllers\Admin\AdminAuthController@updateDetails");
+
     });
 });
 
