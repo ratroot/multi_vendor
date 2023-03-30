@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\Admin;
 use Hash;
+use Image;
 
 class AdminAuthController extends Controller
 {
@@ -63,12 +64,30 @@ class AdminAuthController extends Controller
     public function updateDetails(Request $request) {
         if($request->isMethod('POST')) {
             // dd($request->all());
+            $image_path = '';
+            // dd($request->all());
             $validatedData = $request->validate([
                 'name' => 'required|string|min:3|max:30',
-                'mobile' => 'required|numeric|min:10|max:11'
+                'mobile' => 'required|numeric|min:10'
             ]);
 
-            Admin::where('id', Auth::guard('admin')->user()->id)->update(['name' => $validatedData['name'], 'mobile' => $validatedData['mobile']]);
+            if($request->hasFile('image')) {
+                $image_tmp = $request->file('image');
+                if($image_tmp->isValid()) {
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    $image_name = now()->timestamp.'.'.$extension;
+                    $image_path = 'storage/admin/images/'.$image_name;
+                    // Image::make($image_tmp)->save($image_path);
+                    $image_tmp->storeAs('public/admin/images', $image_name);
+
+                }
+            }
+
+            else if($request->current_image) {
+                $image_path = $request->current_image;
+            }
+
+            Admin::where('id', Auth::guard('admin')->user()->id)->update(['name' => $validatedData['name'], 'mobile' => $validatedData['mobile'], 'image' => $image_path]);
                 return back()->with('details_updated', 'Details has been updated successfully');
 
         }

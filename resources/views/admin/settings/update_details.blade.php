@@ -40,7 +40,8 @@
                                             </button>
                                         </div>
                                     @endif
-                                    <form class="forms-sample" method="post" action="{{ url('admin/update-details') }}">
+                                    <form class="forms-sample" method="post" action="{{ url('admin/update-details') }}"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         <div class="form-group">
                                             <label for="email">Email</label>
@@ -61,6 +62,18 @@
                                             <label for="mobile">Mobile</label>
                                             <input type="text" class="form-control" id="mobile" name="mobile"
                                                 value="{{ $adminDetails['mobile'] }}" placeholder="Mobile" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="image">Image</label>
+                                            <input type="file" accept="image/*" class="form-control" id="image"
+                                                name="image">
+                                            @if (!empty(Auth::guard('admin')->user()->image))
+                                                <a href="{{ asset(Auth::guard('admin')->user()->image) }}"
+                                                    target="_blank">View Image</a>
+                                                <input type="hidden" name="current_image"
+                                                    value="{{ Auth::guard('admin')->user()->image }}" id="current_image">
+                                            @endif
                                         </div>
                                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
                                         <button type="reset" class="btn btn-light">Cancel</button>
