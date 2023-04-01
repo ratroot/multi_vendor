@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,17 +36,18 @@ require __DIR__.'/auth.php';
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function() {
     //Admin Login Route
-    Route::match(['get', 'post'],'login','App\Http\Controllers\Admin\AdminAuthController@login');
+    Route::match(['get', 'post'],'login','AdminAuthController@login');
 
     //Admin Dashboard Route
     Route::group(['middleware' => ['admin']], function(){
         //Admin Logout
-        Route::get('logout', 'App\Http\Controllers\Admin\AdminAuthController@logout');
+        Route::get('logout', 'AdminAuthController@logout');
 
-        Route::get('dashboard', 'App\Http\Controllers\Admin\AdminController@index');
-        Route::match(['get', 'post'], 'update-password', "App\Http\Controllers\Admin\AdminAuthController@updatePassword");
-        Route::match(['get', 'post'], 'update-details', "App\Http\Controllers\Admin\AdminAuthController@updateDetails");
+        Route::get('dashboard', 'AdminController@index');
+        Route::match(['get', 'post'], 'update-password', "AdminAuthController@updatePassword");
+        Route::match(['get', 'post'], 'update-details', "AdminAuthController@updateDetails");
 
+        Route::match(['get', 'post'], 'update-vendor-details/{slug}', 'VendorController@updateVendorDetails');
     });
 });
 
